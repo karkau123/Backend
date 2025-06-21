@@ -42,7 +42,6 @@ def get_latest_shipment() -> dict[str, Any]:
     return shipments[id]
 
 
-
 @app.get("/shipment")
 def get_shipment(id: int | None = None) -> dict[str, Any]:
     if not id:
@@ -51,12 +50,54 @@ def get_shipment(id: int | None = None) -> dict[str, Any]:
     if id not in shipments:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Shipment with id {id} not found" 
-        )   
+            detail=f"Shipment with id {id} not found"
+        )
     return shipments[id]
 
 
+@app.post("/shipment")
+def submit_shipment(content: str, weight: float) -> dict[str, int]:
+    # weight = data.get("weight")
+    if weight > 25:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Weight exceeds the maximum limit of 25kg")
+    new_id = max(shipments.keys()) + 1
+    shipments[new_id] = {
+        "content": content,
+        "weight": weight,
+        "status": "placed",
+    }
+    return {"id": new_id}
 
+
+@app.put("/shipment")   # partial data update is not supported , instead use patch method , we usee the put method to update the entire resource while patch is used to update a part of the resource
+def shipment_update(id: int, content: str, weight: float, status: str) -> dict[str, Any]:
+    shipments[id] = {
+        "content": content,
+        "weight": weight,
+        "status": status,
+    }
+    return shipments[id]
+
+
+@app.patch("/shipment/")
+def patch_shipment(
+    id: int,
+    body:dict[str, Any],
+) -> dict[str, Any]:
+    shipment = shipments.get(id)
+    shipment.update(body)  
+    shipments[id] = shipment
+    return shipment
+
+
+@app.delete("/shipment")
+def delete_shipment(id: int) -> dict[str, str]:
+    shipments.pop(id)
+    return {"detail": f"Shipment with id #{id} deleted successfully"}
+    
+    
 
 @app.get("/scalar", include_in_schema=False)
 def get_scalar():
