@@ -1,9 +1,14 @@
+
 from .schemas import Shipment
 from fastapi import FastAPI, status, HTTPException
 from scalar_fastapi import get_scalar_api_reference
 from typing import Any
-
+from .schemas import ShipmentStatus
 app = FastAPI()
+
+
+    
+
 
 shipments = {
     12345: {
@@ -44,7 +49,7 @@ def get_latest_shipment() -> dict[str, Any]:
     return shipments[id]
 
 
-@app.get("/shipment")
+@app.get("/shipment" , response_model=Shipment)
 def get_shipment(id: int | None = None) -> dict[str, Any]:
     if not id:
         id = max(shipments.keys())
@@ -83,10 +88,12 @@ def shipment_update(id: int, content: str, weight: float, status: str) -> dict[s
     return shipments[id]
 
 
-@app.patch("/shipment/")
-def patch_shipment(
+
+
+@app.patch("/shipment")
+def update_shipment(
     id: int,
-    body:dict[str, Any],
+    body:dict[str, ShipmentStatus]
 ) -> dict[str, Any]:
     shipment = shipments.get(id)
     shipment.update(body)  
