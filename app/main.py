@@ -6,36 +6,7 @@ from typing import Any
 app = FastAPI()
 
 shipments = {
-    12345: {
-
-        "weight": 0.6,
-        "content": "glassware",
-        "status": "placed",
-        "destination": 101,
-    },
-    23456: {
-
-        "weight": 1.2,
-        "content": "books",
-        "status": "in transit",
-    },
-    34567: {
-
-        "weight": 0.9,
-        "content": "electronics",
-        "status": "delivered",
-    },
-    45678: {
-
-        "weight": 2.5,
-        "content": "furniture",
-        "status": "pending",
-    },
-    56789: {
-        "weight": 0.3,
-        "content": "clothing",
-        "status": "cancelled",
-    },
+    
 }
 # uvicorn app.main:app --reload
 
@@ -106,3 +77,6 @@ def get_scalar():
         openapi_url=app.openapi_url,
         title="scalar-api"
     )
+
+
+# if i write ressponse_model = None then pydantic will skip the validation of the response model
