@@ -3,12 +3,10 @@ from .schemas import ShipmentRead , ShipmentCreate, ShipmmmentUpdate
 from fastapi import FastAPI, status, HTTPException
 from scalar_fastapi import get_scalar_api_reference
 from typing import Any
+from .database import shipments , save
 app = FastAPI()
 
-shipments = {
-    
-}
-# uvicorn app.main:app --reload
+ 
 
 @app.get("/shipment/latest")
 def get_latest_shipment() -> dict[str, Any]:
@@ -16,7 +14,7 @@ def get_latest_shipment() -> dict[str, Any]:
     return shipments[id]
 
 
-@app.get("/shipment" , response_model=ShipmentRead)
+@app.get("/shipment")
 def get_shipment(id: int):
     if id not in shipments:
         raise HTTPException(
@@ -24,7 +22,7 @@ def get_shipment(id: int):
             detail=f"Shipment with id {id} not found"
         )
     return shipments[id]
-
+# uvicorn app.main:app --reload
 
 @app.post("/shipment")
 def submit_shipment(shipment : ShipmentCreate) -> dict[str, int]:
@@ -34,23 +32,12 @@ def submit_shipment(shipment : ShipmentCreate) -> dict[str, int]:
             detail="Weight exceeds the maximum limit of 25kg")
     new_id = max(shipments.keys()) + 1
     shipments[new_id] = {
-        "content": shipment.content,
-        "weight": shipment.weight,
+        **shipment.model_dump(),
+        "id" : new_id,
         "status": "placed",
     }
+    save()
     return {"id": new_id}
-
-
-# @app.put("/shipment")   # partial data update is not supported , instead use patch method , we usee the put method to update the entire resource while patch is used to update a part of the resource
-# def shipment_update(id: int, content: str, weight: float, status: str) -> dict[str, Any]:
-#     shipments[id] = {
-#         "content": content,
-#         "weight": weight,
-#         "status": status,
-#     }
-#     return shipments[id]
-
-
 
 
 @app.patch("/shipment" , response_model=ShipmentRead)
@@ -58,10 +45,10 @@ def update_shipment(
     id: int,
     body:dict[str, ShipmmmentUpdate]
 ) :
-    shipment = shipments.get(id)
-    shipment.update(body)  
-    shipments[id] = shipment
-    return shipment
+    
+    shipments[id].update(body.model_dump(exclude_none = True))
+   
+    return shipments[id]
 
 
 @app.delete("/shipment")
