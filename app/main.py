@@ -11,6 +11,7 @@ shipments = {
         "weight": 0.6,
         "content": "glassware",
         "status": "placed",
+        "destination": 101,
     },
     23456: {
 
@@ -36,7 +37,7 @@ shipments = {
         "status": "cancelled",
     },
 }
-
+# uvicorn app.main:app --reload
 
 @app.get("/shipment/latest")
 def get_latest_shipment() -> dict[str, Any]:
@@ -45,10 +46,7 @@ def get_latest_shipment() -> dict[str, Any]:
 
 
 @app.get("/shipment" , response_model=ShipmentRead)
-def get_shipment(id: int | None = None) -> dict[str, Any]:
-    if not id:
-        id = max(shipments.keys())
-        return shipments[id]
+def get_shipment(id: int):
     if id not in shipments:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -59,7 +57,6 @@ def get_shipment(id: int | None = None) -> dict[str, Any]:
 
 @app.post("/shipment")
 def submit_shipment(shipment : ShipmentCreate) -> dict[str, int]:
-    # weight = data.get("weight")
     if shipment.weight > 25:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
@@ -73,23 +70,23 @@ def submit_shipment(shipment : ShipmentCreate) -> dict[str, int]:
     return {"id": new_id}
 
 
-@app.put("/shipment")   # partial data update is not supported , instead use patch method , we usee the put method to update the entire resource while patch is used to update a part of the resource
-def shipment_update(id: int, content: str, weight: float, status: str) -> dict[str, Any]:
-    shipments[id] = {
-        "content": content,
-        "weight": weight,
-        "status": status,
-    }
-    return shipments[id]
+# @app.put("/shipment")   # partial data update is not supported , instead use patch method , we usee the put method to update the entire resource while patch is used to update a part of the resource
+# def shipment_update(id: int, content: str, weight: float, status: str) -> dict[str, Any]:
+#     shipments[id] = {
+#         "content": content,
+#         "weight": weight,
+#         "status": status,
+#     }
+#     return shipments[id]
 
 
 
 
-@app.patch("/shipment")
+@app.patch("/shipment" , response_model=ShipmentRead)
 def update_shipment(
     id: int,
     body:dict[str, ShipmmmentUpdate]
-) -> dict[str, Any]:
+) :
     shipment = shipments.get(id)
     shipment.update(body)  
     shipments[id] = shipment
