@@ -24,7 +24,7 @@ class ShipmentCreate(BaseShipment):
     pass
     
     
-class ShipmmmentUpdate(BaseModel):
+class ShipmentUpdate(BaseModel):
     status:  ShipmentStatus
 
  
