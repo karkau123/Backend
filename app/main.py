@@ -2,7 +2,7 @@
 from .schemas import   ShipmentCreate, ShipmentUpdate
 from fastapi import FastAPI, status, HTTPException
 from scalar_fastapi import get_scalar_api_reference
-from .database import Database
+from .database.database import Database
 app = FastAPI()
 
 db = Database()

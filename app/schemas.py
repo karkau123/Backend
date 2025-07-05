@@ -1,15 +1,7 @@
 from pydantic import BaseModel, Field
-from enum import Enum
+
+from app.database.models import ShipmentStatus
  
-class ShipmentStatus(str, Enum):
-    placed = "placed"
-    shipped = "shipped"
-    delivered = "delivered"
-    cancelled = "cancelled"
-    out_for_delivery = "out for delivery"
-    in_transit = "in transit"
-
-
 class BaseShipment(BaseModel):
     content : str
     weight: float = Field(le=25)
