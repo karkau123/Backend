@@ -1,8 +1,7 @@
-from fastapi import Depends
+
 # from app.schemas import Shipment
 from sqlalchemy.ext.asyncio import create_async_engine  , AsyncSession
 from sqlmodel import SQLModel 
-from typing import Annotated
 from sqlalchemy.orm import sessionmaker
 from app.config import settings
 
@@ -17,17 +16,6 @@ async def create_db_tables():
         
 
 
-# session = Session(
-#     bind = engine
-# )
-# session.get(Shipment , 12345)
-# session.add(
-#     Shipment(id = 12345)
-# )
-# session.commit()
-
-
-
 
 async def get_session():
     async_session = sessionmaker(
@@ -38,4 +26,4 @@ async def get_session():
     with async_session(bind = engine) as session:
         yield session
         
-SessionDep = Annotated[AsyncSession , Depends(get_session)]
+ 
