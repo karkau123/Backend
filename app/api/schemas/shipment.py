@@ -1,24 +1,25 @@
-import datetime
-from sqlmodel import SQLModel, Field
+from datetime import datetime
+from pydantic import BaseModel, Field
+
 from app.database.models import ShipmentStatus
 
 
-class BaseShipment(SQLModel):
+class BaseShipment(BaseModel):
     content: str
     weight: float = Field(le=25)
     destination: int
 
 
-class Shipment (BaseShipment, table=True):
-    id: int = Field(default=None, primary_key=True)
-    status:  ShipmentStatus
-    estimated_delivery: datetime.datetime
+class ShipmentRead(BaseShipment):
+    id: int
+    status: ShipmentStatus
+    estimated_delivery: datetime
 
 
 class ShipmentCreate(BaseShipment):
     pass
+    
 
-
-class ShipmentUpdate(SQLModel):
-    status:  ShipmentStatus | None = Field(default=None)
-    estimated_delivery: datetime.datetime | None = Field(default=None)
+class ShipmentUpdate(BaseModel):
+    status: ShipmentStatus | None = Field(default=None)
+    estimated_delivery: datetime | None = Field(default=None)

@@ -1,4 +1,3 @@
-
 from typing import Annotated
 
 from fastapi import Depends
@@ -8,12 +7,17 @@ from app.database.session import get_session
 from app.services.shipment import ShipmentService
 
 
+# Asynchronous database session dep annotation
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
-def get_shipment_service(session : SessionDep):
+# Shipment service dep
+def get_shipment_service(session: SessionDep):
     return ShipmentService(session)
-    
 
 
-ServiceDep = Annotated[ShipmentService, Depends(get_shipment_service)]
+# Shipment service dep annotation
+ServiceDep = Annotated[
+    ShipmentService,
+    Depends(get_shipment_service),
+]

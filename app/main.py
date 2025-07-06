@@ -1,31 +1,30 @@
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from scalar_fastapi import get_scalar_api_reference
-from contextlib import asynccontextmanager
-from app.database.session import  create_db_tables
-from app.api import router
+
+from app.api.router import router
+from app.database.session import create_db_tables
+
 
 @asynccontextmanager
 async def lifespan_handler(app: FastAPI):
-    create_db_tables()
+    await create_db_tables()
     yield
-    print("... Stopped")
 
 
-app = FastAPI(lifespan=lifespan_handler)
+app = FastAPI(
+    # Server start/stop listener
+    lifespan=lifespan_handler,
+)
 
 
 app.include_router(router)
 
-
-
-
+### Scalar API Documentation
 @app.get("/scalar", include_in_schema=False)
-def get_scalar():
+def get_scalar_docs():
     return get_scalar_api_reference(
         openapi_url=app.openapi_url,
-        title="scalar-api"
+        title="Scalar API",
     )
-
-
-# if i write ressponse_model = None then pydantic will skip the validation of the response model
