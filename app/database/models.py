@@ -20,3 +20,5 @@ class Shipment(SQLModel, table = True):
     destination: int
     status: ShipmentStatus
     estimated_delivery: datetime
+    
+    

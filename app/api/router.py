@@ -7,7 +7,7 @@ from .schemas.shipment import ShipmentCreate, ShipmentRead, ShipmentUpdate
 router = APIRouter(prefix="/shipment", tags=["Shipment"])
 
 
-### Read a shipment by id
+# Read a shipment by id
 @router.get("/", response_model=ShipmentRead)
 async def get_shipment(id: int, service: ServiceDep):
     # Check for shipment with given id
@@ -22,7 +22,7 @@ async def get_shipment(id: int, service: ServiceDep):
     return shipment
 
 
-### Create a new shipment with content and weight
+# Create a new shipment with content and weight
 @router.post("/", response_model=ShipmentRead)
 async def submit_shipment(
     shipment: ShipmentCreate,
@@ -31,7 +31,7 @@ async def submit_shipment(
     return await service.add(shipment)
 
 
-### Update fields of a shipment
+# Update fields of a shipment
 @router.patch("/", response_model=ShipmentRead)
 async def update_shipment(
     id: int,
@@ -50,7 +50,7 @@ async def update_shipment(
     return await service.update(id, update)
 
 
-### Delete a shipment by id
+# Delete a shipment by id
 @router.delete("/")
 async def delete_shipment(id: int, service: ServiceDep) -> dict[str, str]:
     # Remove from database
