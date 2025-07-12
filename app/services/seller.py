@@ -1,5 +1,5 @@
 import datetime
-from select import select
+from sqlalchemy import select  # FIX: import select from sqlalchemy
 from fastapi import HTTPException, status
 import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,28 +28,26 @@ class SellerService:
 
         return seller
 
-
-
-    async def token(self , email , password)->str:
-        #validate the credentials
+    async def token(self, email, password) -> str:
+        # validate the credentials
         result = await self.session.execute(select(Seller).where(Seller.email == email))
         seller = result.scalar()
         if seller is None or not password_context.verify(
             password,
             seller.password_hash
         ):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Email or password is  incorrect")
-        
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="Email or password is  incorrect")
+
         token = jwt.encode(
-            payload = {
-                "user" : {
-                    "name" : seller.name,
-                    "email" : seller.email,
+            payload={
+                "user": {
+                    "name": seller.name,
+                    "email": seller.email,
                 },
-                "exp" : datetime.now() + datetime.timedelta(days = 1)
+                "exp": datetime.datetime.now() + datetime.timedelta(days=1)
             },
-            algorithm = security_settings.JWT_ALGORITHM,
-            key = security_settings.JWT_SECRET,
+            algorithm=security_settings.JWT_ALGORITHM,
+            key=security_settings.JWT_SECRET,
         )
         return token
-       
