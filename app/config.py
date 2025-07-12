@@ -21,12 +21,12 @@ class DatabaseSettings(BaseSettings):
     def POSTGRES_URL(self):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
-class Security_Settings(BaseException):
+
+class Security_Settings(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str
     model_config = _base_config
 
+
 db_settings = DatabaseSettings()
 security_settings = Security_Settings()
-
-
