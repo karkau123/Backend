@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 
-from ..dependencies import ServiceDep
+from ..dependencies import SellerDep, ServiceDep
 from ..schemas.shipment import ShipmentCreate, ShipmentRead, ShipmentUpdate
 
 # api router to group endpoints
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/shipment", tags=["Shipment"])
 
 # Read a shipment by id
 @router.get("/", response_model=ShipmentRead)
-async def get_shipment(id: int, service: ServiceDep):
+async def get_shipment(id: int, _ : SellerDep ,  service: ServiceDep):
     # Check for shipment with given id
     shipment = await service.get(id)
 
@@ -18,13 +18,13 @@ async def get_shipment(id: int, service: ServiceDep):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Given id doesn't exist!",
         )
-
     return shipment
 
 
 # Create a new shipment with content and weight
 @router.post("/", response_model=ShipmentRead)
 async def submit_shipment(
+    seller : SellerDep,
     shipment: ShipmentCreate,
     service: ServiceDep,
 ):
