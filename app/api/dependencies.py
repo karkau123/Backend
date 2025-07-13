@@ -14,23 +14,23 @@ from app.utils import decode_access_token
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
-
-
 # Access token data dep
 
-def get_access_token(token: Annotated[str, Depends(oauth2_scheme)])->dict:
+def get_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
     data = decode_access_token(token)
-    if data datais None:
+    if data is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Acceess token"
         )
-    return 
+    return data
 
 # logged in seller
+
+
 async def get_current_seller(token_data: Annotated[dict, Depends(get_access_token)], session: SessionDep):
-    return await session.get(Seller , token_data["user"]["id"])
-        
+    return await session.get(Seller, token_data["user"]["id"])
+
 
 # Shipment service dep
 def get_shipment_service(session: SessionDep):
@@ -51,7 +51,7 @@ def get_seller_service(session: SessionDep):
 
 
 SellerDep = Annotated[
-    Seller ,
+    Seller,
     Depends(get_current_seller)
 ]
 
@@ -60,5 +60,4 @@ SellerServiceDep = Annotated[
     SellerService,
     Depends(get_seller_service),
 ]
-
 
