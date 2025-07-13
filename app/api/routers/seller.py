@@ -3,9 +3,10 @@ from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.core.security import oauth2_scheme
 from app.api.schemas.seller import SellerRead, SellerCreate
+# from app.database.redis import add_jti_to_blacklist
 from app.utils import decode_access_token
 
-from ..dependencies import SellerServiceDep, SessionDep
+from ..dependencies import SellerServiceDep, SessionDep, get_access_token
 # Make sure this import path matches your project structure
 from app.database.models import Seller
 
@@ -30,3 +31,11 @@ async def login_seller(
     return {"access_token": token, "type": "jwt"}
 
  
+# @router.post("/logout")
+# async def logout_seller(token_data: Annotated[dict, Depends(get_access_token)]):
+#     await add_jti_to_blacklist(token_data["jti"])
+#     return {
+#         "detail" : "Success"
+#     }
+    
+    
