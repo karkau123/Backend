@@ -28,7 +28,7 @@ async def submit_shipment(
     shipment: ShipmentCreate,
     service: ServiceDep,
 ):
-    return await service.add(shipment)
+    return await service.add(shipment ,seller )
 
 
 # Update fields of a shipment

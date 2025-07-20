@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
-from sqlalchemy import UUID
+import uuid  # <-- add this import
 
 from app.database.models import ShipmentStatus
 
@@ -12,14 +12,14 @@ class BaseShipment(BaseModel):
 
 
 class ShipmentRead(BaseShipment):
-    id: UUID
+    id: uuid.UUID  # <-- change from SQLAlchemy UUID to Python uuid.UUID
     status: ShipmentStatus
     estimated_delivery: datetime
 
 
 class ShipmentCreate(BaseShipment):
     pass
-    
+
 
 class ShipmentUpdate(BaseModel):
     status: ShipmentStatus | None = Field(default=None)
