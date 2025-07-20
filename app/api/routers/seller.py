@@ -1,18 +1,12 @@
 from fastapi.security import OAuth2PasswordRequestForm
 from typing_extensions import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from app.core.security import oauth2_scheme
+from fastapi import APIRouter, Depends
 from app.api.schemas.seller import SellerRead, SellerCreate
 # from app.database.redis import add_jti_to_blacklist
-from app.utils import decode_access_token
-
-from ..dependencies import SellerServiceDep, SessionDep, get_access_token
+from ..dependencies import SellerServiceDep
 # Make sure this import path matches your project structure
-from app.database.models import Seller
 
 router = APIRouter(prefix="/seller",  tags=["Seller"])
-
-
 @router.post("/signup", response_model=SellerRead)
 async def register_seller(seller: SellerCreate,
                           service: SellerServiceDep
